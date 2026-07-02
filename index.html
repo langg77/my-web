@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeProtect — JS Obfuscator & HTML Minifier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Mono&display=swap');
+
+:root {
+  --md-primary:          #4F46E5;
+  --md-on-primary:       #FFFFFF;
+  --md-primary-container: #E8E7FF;
+  --md-on-primary-container: #160066;
+  --md-secondary:        #6B5CE7;
+  --md-secondary-container: #EDE8FF;
+  --md-on-secondary-container: #1A0E66;
+  --md-tertiary:         #0D9488;
+  --md-tertiary-container: #CCFBF1;
+  --md-on-tertiary-container: #003732;
+  --md-error:            #DC2626;
+  --md-error-container:  #FEE2E2;
+  --md-surface:          #FAFAFF;
+  --md-surface-1:        #F0EFFF;
+  --md-surface-2:        #E8E7FF;
+  --md-surface-3:        #DDDCFF;
+  --md-on-surface:       #1A1A2E;
+  --md-on-surface-var:   #46465A;
+  --md-outline:          #C8C7DC;
+  --md-outline-var:      #E4E3F5;
+  --md-inverse-surface:  #2E2D42;
+  --md-inverse-on-surface: #F3F1FF;
+  --elev-1: 0 1px 2px rgba(79,70,229,0.06), 0 1px 3px rgba(79,70,229,0.04);
+  --elev-2: 0 2px 6px rgba(79,70,229,0.08), 0 1px 4px rgba(79,70,229,0.05);
+  --elev-3: 0 4px 12px rgba(79,70,229,0.12), 0 2px 6px rgba(79,70,229,0.06);
+  --elev-4: 0 8px 24px rgba(79,70,229,0.14), 0 4px 8px rgba(79,70,229,0.08);
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 100px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', 'Google Sans', sans-serif;
+  background: var(--md-surface);
+  color: var(--md-on-surface);
+  min-height: 100vh;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: var(--md-surface);
+  border-bottom: 1px solid var(--md-outline-var);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--elev-1);
+}
+
+.logo { display: flex; align-items: center; gap: 10px; }
+
+.logo-icon {
+  width: 40px; height: 40px;
+  background: var(--md-primary);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  color: var(--md-on-primary);
+  box-shadow: var(--elev-2);
+}
+
+.logo-text {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--md-on-surface);
+  letter-spacing: -0.3px;
+}
+.logo-text span { color: var(--md-primary); }
+
+.header-badge { display: flex; gap: 8px; }
+.badge {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  border: none;
+}
+
+.hero {
+  text-align: center;
+  padding: 52px 20px 36px;
+}
+.hero h1 {
+  font-size: clamp(26px, 4.5vw, 44px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  margin-bottom: 14px;
+  color: var(--md-on-surface);
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--md-primary);
+}
+.hero p {
+  color: var(--md-on-surface-var);
+  font-size: 15px;
+  max-width: 460px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.tabs-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 32px;
+  padding: 0 20px;
+}
+.tabs {
+  display: flex;
+  background: var(--md-surface-1);
+  border: 1.5px solid var(--md-outline-var);
+  border-radius: var(--radius-full);
+  padding: 5px;
+  gap: 4px;
+  box-shadow: var(--elev-1);
+}
+.tab-btn {
+  padding: 10px 28px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--md-on-surface-var);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(.4,0,.2,1);
+  display: flex; align-items: center; gap: 8px;
+}
+.tab-btn.active {
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  font-weight: 600;
+  box-shadow: var(--elev-2);
+}
+.tab-btn:not(.active):hover {
+  background: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+}
+
+.main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px 72px;
+}
+.panel { display: none; }
+.panel.active { display: block; }
+
+.card {
+  background: var(--md-surface);
+  border: 1.5px solid var(--md-outline-var);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--elev-2);
+  margin-bottom: 16px;
+}
+.card-header {
+  padding: 14px 20px;
+  background: var(--md-surface-1);
+  border-bottom: 1.5px solid var(--md-outline-var);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--md-primary);
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--md-primary);
+  display: inline-block;
+}
+.card-actions { display: flex; gap: 6px; }
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+@media (max-width: 768px) {
+  .editor-grid { grid-template-columns: 1fr; }
+  header { padding: 12px 16px; }
+  .main { padding: 0 12px 60px; }
+  .hero { padding: 36px 16px 28px; }
+}
+
+textarea {
+  width: 100%;
+  min-height: 280px;
+  padding: 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12.5px;
+  line-height: 1.7;
+  background: var(--md-surface);
+  border: none;
+  outline: none;
+  resize: vertical;
+  color: var(--md-on-surface);
+  display: block;
+}
+textarea::placeholder { color: var(--md-outline); }
+textarea:focus { background: var(--md-surface-1); }
+
+.upload-zone {
+  border: 2px dashed var(--md-outline);
+  border-radius: var(--radius-sm);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(.4,0,.2,1);
+  margin: 0 16px 16px;
+  background: var(--md-surface-1);
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--md-primary);
+  background: var(--md-primary-container);
+}
+.upload-zone .upload-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: var(--md-primary);
+  display: block;
+}
+.upload-zone p { font-size: 13px; color: var(--md-on-surface-var); line-height: 1.6; }
+.upload-zone strong { color: var(--md-primary); cursor: pointer; font-weight: 600; }
+.upload-zone input { display: none; }
+
+.file-info {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--md-tertiary-container);
+  color: var(--md-on-tertiary-container);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 16px 12px;
+}
+.file-info.show { display: flex; }
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 8px;
+  padding: 16px;
+}
+.setting-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--md-surface);
+  border: 1.5px solid var(--md-outline-var);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(.4,0,.2,1);
+  user-select: none;
+}
+.setting-item:hover {
+  border-color: var(--md-primary);
+  background: var(--md-surface-1);
+  box-shadow: var(--elev-1);
+}
+.setting-item.on {
+  border-color: var(--md-primary);
+  background: var(--md-primary-container);
+}
+
+.toggle {
+  width: 40px; height: 22px;
+  background: var(--md-outline);
+  border-radius: var(--radius-full);
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.22s cubic-bezier(.4,0,.2,1);
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  background: white;
+  border-radius: 50%;
+  top: 3px; left: 3px;
+  transition: left 0.22s cubic-bezier(.4,0,.2,1), width 0.1s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.setting-item.on .toggle { background: var(--md-primary); }
+.setting-item.on .toggle::after { left: 21px; }
+.setting-item:active .toggle::after { width: 20px; }
+
+.setting-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--md-on-surface);
+  line-height: 1.35;
+}
+.setting-item.on .setting-label { color: var(--md-on-primary-container); }
+.setting-label small {
+  display: block;
+  color: var(--md-on-surface-var);
+  font-size: 10.5px;
+  font-weight: 400;
+  margin-top: 1px;
+}
+.setting-item.on .setting-label small { color: var(--md-on-primary-container); opacity: 0.75; }
+
+.settings-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+.setting-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 165px;
+}
+.setting-field label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--md-on-surface-var);
+}
+.setting-field select,
+.setting-field input[type="number"] {
+  padding: 9px 14px;
+  border: 1.5px solid var(--md-outline);
+  border-radius: var(--radius-sm);
+  background: var(--md-surface);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--md-on-surface);
+  outline: none;
+  transition: border-color 0.18s;
+  appearance: none;
+}
+.setting-field select:focus,
+.setting-field input[type="number"]:focus {
+  border-color: var(--md-primary);
+  background: var(--md-surface-1);
+}
+
+.btn {
+  padding: 10px 22px;
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(.4,0,.2,1);
+  display: inline-flex; align-items: center; gap: 7px;
+  letter-spacing: 0.1px;
+}
+
+.btn-primary {
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  box-shadow: var(--elev-2);
+}
+.btn-primary:hover {
+  background: #4338CA;
+  box-shadow: var(--elev-3);
+  transform: translateY(-1px);
+}
+.btn-primary:active { transform: translateY(0); box-shadow: var(--elev-1); }
+
+.btn-outline {
+  background: var(--md-surface);
+  color: var(--md-primary);
+  border: 1.5px solid var(--md-primary);
+}
+.btn-outline:hover {
+  background: var(--md-primary-container);
+  box-shadow: var(--elev-1);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--md-on-surface-var);
+  padding: 7px 14px;
+  font-size: 12.5px;
+  border-radius: var(--radius-full);
+}
+.btn-ghost:hover {
+  background: var(--md-surface-2);
+  color: var(--md-primary);
+}
+
+.btn-success {
+  background: var(--md-tertiary);
+  color: white;
+  box-shadow: var(--elev-2);
+}
+
+.action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--md-surface-1);
+  border-top: 1.5px solid var(--md-outline-var);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.action-bar-left { display: flex; gap: 10px; flex-wrap: wrap; }
+.action-bar-right { display: flex; gap: 10px; align-items: center; }
+
+.stats-bar {
+  display: flex;
+  gap: 20px;
+  padding: 10px 20px;
+  background: var(--md-surface-1);
+  border-top: 1px solid var(--md-outline-var);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.stat { display: flex; align-items: center; gap: 5px; }
+.stat-label { color: var(--md-on-surface-var); font-weight: 500; }
+.stat-value {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  color: var(--md-primary);
+}
+.stat-value.good { color: var(--md-tertiary); }
+
+.progress-bar-wrap {
+  height: 4px;
+  background: var(--md-outline-var);
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--md-primary), var(--md-secondary));
+  width: 0%;
+  transition: width 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--md-on-surface-var);
+  padding: 0 16px;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--md-outline-var);
+}
+
+.info-strip {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.info-card {
+  flex: 1;
+  min-width: 150px;
+  background: var(--md-surface);
+  border: 1.5px solid var(--md-outline-var);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: var(--elev-1);
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+.info-card:hover { box-shadow: var(--elev-3); transform: translateY(-2px); }
+.info-card-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  background: var(--md-primary-container);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--md-primary);
+}
+.info-card-text h4 {
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 3px;
+  color: var(--md-on-surface);
+}
+.info-card-text p {
+  font-size: 11px;
+  color: var(--md-on-surface-var);
+  line-height: 1.5;
+}
+
+.processing-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(250,250,255,0.88);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 18px;
+}
+.processing-overlay.show { display: flex; }
+.spinner {
+  width: 48px; height: 48px;
+  border: 4px solid var(--md-outline-var);
+  border-top-color: var(--md-primary);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.processing-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  color: var(--md-primary);
+  font-weight: 700;
+}
+
+.toast-container {
+  position: fixed;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.toast {
+  padding: 12px 20px;
+  border-radius: var(--radius-full);
+  font-size: 13.5px;
+  font-weight: 500;
+  display: flex; align-items: center; gap: 9px;
+  animation: toastIn 0.3s cubic-bezier(.4,0,.2,1);
+  box-shadow: var(--elev-4);
+  min-width: 220px;
+  justify-content: center;
+}
+.toast.success { background: var(--md-inverse-surface); color: var(--md-inverse-on-surface); }
+.toast.error   { background: var(--md-error); color: #fff; }
+.toast.info    { background: var(--md-inverse-surface); color: var(--md-inverse-on-surface); }
+@keyframes toastIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+    <div class="logo-text">Code<span>Protect</span></div>
+  </div>
+  <div class="header-badge">
+    <span class="badge">JS Obfuscator</span>
+    <span class="badge">HTML Minifier</span>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Protect & <em>Optimize</em> Your Code</h1>
+  <p>Obfuscate JavaScript dengan proteksi maksimal & minify HTML secara instan, langsung di browser.</p>
+</div>
+
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('js')">
+      <i class="fa-solid fa-bolt"></i> JS Obfuscator
+    </button>
+    <button class="tab-btn" onclick="switchTab('html')">
+      <i class="fa-solid fa-compress"></i> HTML Minifier
+    </button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- JS PANEL -->
+  <div class="panel active" id="panel-js">
+    <div class="info-strip">
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fa-solid fa-lock"></i></div>
+        <div class="info-card-text"><h4>Self Defending</h4><p>Kode mendeteksi dan memblokir upaya deobfuscasi</p></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fa-solid fa-shuffle"></i></div>
+        <div class="info-card-text"><h4>Control Flow Flattening</h4><p>Struktur alur kode diubah total menjadi tidak terbaca</p></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fa-solid fa-key"></i></div>
+        <div class="info-card-text"><h4>String Array RC4</h4><p>Semua string dienkripsi dengan cipher RC4</p></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fa-solid fa-hashtag"></i></div>
+        <div class="info-card-text"><h4>HEX Identifiers</h4><p>Semua nama variabel & fungsi diubah ke hex</p></div>
+      </div>
+    </div>
+
+    <div class="editor-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Input JavaScript</div>
+          <div class="card-actions">
+            <button class="btn btn-ghost" onclick="pasteJS()"><i class="fa-solid fa-clipboard"></i> Paste</button>
+          </div>
+        </div>
+        <div class="upload-zone" id="jsUploadZone" onclick="document.getElementById('jsFileInput').click()"
+          ondragover="handleDragOver(event,'jsUploadZone')"
+          ondragleave="handleDragLeave(event,'jsUploadZone')"
+          ondrop="handleDrop(event,'js')">
+          <div class="upload-icon"><i class="fa-solid fa-folder-open"></i></div>
+          <p>Drag & drop file <strong>.js</strong> di sini<br>atau <strong>klik untuk browse</strong></p>
+          <input type="file" id="jsFileInput" accept=".js,.txt" onchange="loadJSFile(event)">
+        </div>
+        <div class="file-info" id="jsFileInfo">
+          <i class="fa-solid fa-circle-check"></i> <span id="jsFileName">file.js</span>
+        </div>
+        <textarea id="jsInput" placeholder="// Paste JavaScript kamu di sini...
+function hello() {
+  const msg = 'Hello World';
+  console.log(msg);
+  return msg;
+}"></textarea>
+        <div class="stats-bar" id="jsInputStats">
+          <div class="stat"><span class="stat-label">Size:</span><span class="stat-value" id="jsInputSize">0 B</span></div>
+          <div class="stat"><span class="stat-label">Lines:</span><span class="stat-value" id="jsInputLines">0</span></div>
+          <div class="stat"><span class="stat-label">Chars:</span><span class="stat-value" id="jsInputChars">0</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Output Obfuscated</div>
+          <div class="card-actions">
+            <button class="btn btn-ghost" onclick="clearJSOutput()" title="Hapus output"><i class="fa-solid fa-trash"></i> Clear</button>
+            <button class="btn btn-ghost" onclick="copyOutput('jsOutput')"><i class="fa-solid fa-copy"></i> Copy</button>
+          </div>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="jsProgress"></div></div>
+        <textarea id="jsOutput" placeholder="// Hasil obfuscation akan muncul di sini..." readonly></textarea>
+        <div class="stats-bar" id="jsOutputStats">
+          <div class="stat"><span class="stat-label">Size:</span><span class="stat-value" id="jsOutputSize">0 B</span></div>
+          <div class="stat"><span class="stat-label">Ratio:</span><span class="stat-value" id="jsRatio">—</span></div>
+          <div class="stat"><span class="stat-label">Status:</span><span class="stat-value" id="jsStatus">idle</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Obfuscation Settings</div>
+        <div class="card-actions">
+          <button class="btn btn-ghost" onclick="resetJSSettings()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+          <button class="btn btn-outline btn-ghost" onclick="applyPreset('max')"><i class="fa-solid fa-fire"></i> Max</button>
+          <button class="btn btn-outline btn-ghost" onclick="applyPreset('light')"><i class="fa-solid fa-feather"></i> Light</button>
+        </div>
+      </div>
+
+      <div class="section-title" style="padding-top:14px">Proteksi Utama</div>
+      <div class="settings-grid">
+        <div class="setting-item on" id="tog-compact" onclick="toggleSetting(this,'compact')">
+          <div class="toggle"></div>
+          <div class="setting-label">Compact<small>Hapus whitespace & newline</small></div>
+        </div>
+        <div class="setting-item on" id="tog-self-defending" onclick="toggleSetting(this,'self-defending')">
+          <div class="toggle"></div>
+          <div class="setting-label">Self Defending<small>Blokir deobfuscasi</small></div>
+        </div>
+        <div class="setting-item on" id="tog-debug-protection" onclick="toggleSetting(this,'debug-protection')">
+          <div class="toggle"></div>
+          <div class="setting-label">Debug Protection<small>Blokir browser devtools</small></div>
+        </div>
+        <div class="setting-item on" id="tog-disable-console" onclick="toggleSetting(this,'disable-console')">
+          <div class="toggle"></div>
+          <div class="setting-label">Disable Console<small>Matikan console.log dll</small></div>
+        </div>
+        <div class="setting-item on" id="tog-rename-globals" onclick="toggleSetting(this,'rename-globals')">
+          <div class="toggle"></div>
+          <div class="setting-label">Rename Globals<small>Rename variabel global</small></div>
+        </div>
+        <div class="setting-item on" id="tog-simplify" onclick="toggleSetting(this,'simplify')">
+          <div class="toggle"></div>
+          <div class="setting-label">Simplify<small>Sederhanakan ekspresi</small></div>
+        </div>
+      </div>
+
+      <div class="section-title">Transformasi Kode</div>
+      <div class="settings-grid">
+        <div class="setting-item on" id="tog-control-flow" onclick="toggleSetting(this,'control-flow')">
+          <div class="toggle"></div>
+          <div class="setting-label">Control Flow Flattening<small>Acak alur kode</small></div>
+        </div>
+        <div class="setting-item on" id="tog-dead-code" onclick="toggleSetting(this,'dead-code')">
+          <div class="toggle"></div>
+          <div class="setting-label">Dead Code Injection<small>Sisipkan kode palsu</small></div>
+        </div>
+        <div class="setting-item on" id="tog-numbers-expr" onclick="toggleSetting(this,'numbers-expr')">
+          <div class="toggle"></div>
+          <div class="setting-label">Numbers to Expressions<small>Ubah angka ke ekspresi</small></div>
+        </div>
+        <div class="setting-item on" id="tog-transform-obj" onclick="toggleSetting(this,'transform-obj')">
+          <div class="toggle"></div>
+          <div class="setting-label">Transform Object Keys<small>Obfuscate key objek</small></div>
+        </div>
+        <div class="setting-item on" id="tog-unicode-escape" onclick="toggleSetting(this,'unicode-escape')">
+          <div class="toggle"></div>
+          <div class="setting-label">Unicode Escape<small>Encode ke unicode</small></div>
+        </div>
+      </div>
+
+      <div class="section-title">String Array</div>
+      <div class="settings-grid">
+        <div class="setting-item on" id="tog-string-array" onclick="toggleSetting(this,'string-array')">
+          <div class="toggle"></div>
+          <div class="setting-label">String Array<small>Kumpulkan semua string</small></div>
+        </div>
+        <div class="setting-item on" id="tog-string-calls" onclick="toggleSetting(this,'string-calls')">
+          <div class="toggle"></div>
+          <div class="setting-label">Calls Transform<small>Transformasi pemanggilan</small></div>
+        </div>
+        <div class="setting-item on" id="tog-split-strings" onclick="toggleSetting(this,'split-strings')">
+          <div class="toggle"></div>
+          <div class="setting-label">Split Strings<small>Pecah string jadi chunks</small></div>
+        </div>
+        <div class="setting-item on" id="tog-str-index-shift" onclick="toggleSetting(this,'str-index-shift')">
+          <div class="toggle"></div>
+          <div class="setting-label">Index Shift<small>Geser index array</small></div>
+        </div>
+        <div class="setting-item on" id="tog-str-rotate" onclick="toggleSetting(this,'str-rotate')">
+          <div class="toggle"></div>
+          <div class="setting-label">Rotate<small>Rotasi array</small></div>
+        </div>
+        <div class="setting-item on" id="tog-str-shuffle" onclick="toggleSetting(this,'str-shuffle')">
+          <div class="toggle"></div>
+          <div class="setting-label">Shuffle<small>Acak posisi</small></div>
+        </div>
+        <div class="setting-item on" id="tog-chained-calls" onclick="toggleSetting(this,'chained-calls')">
+          <div class="toggle"></div>
+          <div class="setting-label">Chained Calls<small>Panggilan berantai</small></div>
+        </div>
+      </div>
+
+      <div class="settings-row" style="padding-top:4px">
+        <div class="setting-field">
+          <label>Identifier Generator</label>
+          <select id="sel-identifier" onchange="toggleWatermarkField()">
+            <option value="hexadecimal" selected>Hexadecimal (0x...)</option>
+            <option value="mangled">Mangled (a, b, c...)</option>
+            <option value="mangled-shuffled">Mangled Shuffled</option>
+            <option value="dictionary">Dictionary</option>
+            <option value="chinese">Chinese (Unicode)</option>
+            <option value="watermark">Watermark</option>
+          </select>
+        </div>
+        <div class="setting-field" id="field-watermark" style="display:none">
+          <label>Watermark Text</label>
+          <input type="text" id="inp-watermark" placeholder="e.g. MyApp" style="padding:9px 14px;border:1.5px solid var(--md-outline);border-radius:var(--radius-sm);background:var(--md-surface);font-family:'Space Mono',monospace;font-size:12px;color:var(--md-on-surface);outline:none;" onfocus="this.style.borderColor='var(--md-primary)'" onblur="this.style.borderColor='var(--md-outline)'">
+        </div>
+        <div class="setting-field">
+          <label>String Array Encoding</label>
+          <select id="sel-encoding">
+            <option value="rc4" selected>RC4</option>
+            <option value="base64">Base64</option>
+            <option value="none">None</option>
+          </select>
+        </div>
+        <div class="setting-field">
+          <label>Debug Protection Interval (ms)</label>
+          <input type="number" id="inp-debug-interval" value="4000" min="0" max="10000">
+        </div>
+        <div class="setting-field">
+          <label>Split String Chunk Length</label>
+          <input type="number" id="inp-chunk-len" value="2" min="1" max="20">
+        </div>
+        <div class="setting-field">
+          <label>Wrappers Count</label>
+          <input type="number" id="inp-wrappers-count" value="5" min="1" max="20">
+        </div>
+        <div class="setting-field">
+          <label>Wrappers Params Max</label>
+          <input type="number" id="inp-wrappers-params" value="5" min="1" max="10">
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <div class="action-bar-left">
+          <button class="btn btn-primary" onclick="obfuscateJS()"><i class="fa-solid fa-shield-halved"></i> Obfuscate Now</button>
+        </div>
+        <div class="action-bar-right">
+          <button class="btn btn-outline" onclick="downloadOutput('jsOutput', jsOriginalName)" id="jsDownloadBtn" disabled><i class="fa-solid fa-download"></i> Download .js</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HTML PANEL -->
+  <div class="panel" id="panel-html">
+    <div class="info-strip">
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fa-solid fa-box-archive"></i></div>
+        <div class="info-card-text"><h4>Collapse Whitespace</h4><p>Hapus semua spasi & newline yang tidak perlu</p></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fa-solid fa-comment-slash"></i></div>
+        <div class="info-card-text"><h4>Remove Comments</h4><p>Hapus semua komentar HTML dari output</p></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fa-solid fa-paintbrush"></i></div>
+        <div class="info-card-text"><h4>Minify CSS & JS</h4><p>CSS inline dan JS di dalam HTML ikut diminify</p></div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon"><i class="fa-solid fa-file-code"></i></div>
+        <div class="info-card-text"><h4>Short Doctype</h4><p>Ubah DOCTYPE ke versi pendek HTML5</p></div>
+      </div>
+    </div>
+
+    <div class="editor-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Input HTML</div>
+        </div>
+        <div class="upload-zone" id="htmlUploadZone" onclick="document.getElementById('htmlFileInput').click()"
+          ondragover="handleDragOver(event,'htmlUploadZone')"
+          ondragleave="handleDragLeave(event,'htmlUploadZone')"
+          ondrop="handleDrop(event,'html')">
+          <div class="upload-icon"><i class="fa-solid fa-folder-open"></i></div>
+          <p>Drag & drop file <strong>.html</strong> di sini<br>atau <strong>klik untuk browse</strong></p>
+          <input type="file" id="htmlFileInput" accept=".html,.htm,.txt" onchange="loadHTMLFile(event)">
+        </div>
+        <div class="file-info" id="htmlFileInfo">
+          <i class="fa-solid fa-circle-check"></i> <span id="htmlFileName">file.html</span>
+        </div>
+        <textarea id="htmlInput" placeholder="<!DOCTYPE html>
+<html>
+  <!-- Paste HTML kamu di sini -->
+  <head>
+    <title>My Page</title>
+  </head>
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>"></textarea>
+        <div class="stats-bar">
+          <div class="stat"><span class="stat-label">Size:</span><span class="stat-value" id="htmlInputSize">0 B</span></div>
+          <div class="stat"><span class="stat-label">Lines:</span><span class="stat-value" id="htmlInputLines">0</span></div>
+          <div class="stat"><span class="stat-label">Tags:</span><span class="stat-value" id="htmlInputTags">0</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Output Minified</div>
+          <div class="card-actions">
+            <button class="btn btn-ghost" onclick="clearHTMLOutput()" title="Hapus output"><i class="fa-solid fa-trash"></i> Clear</button>
+            <button class="btn btn-ghost" onclick="copyOutput('htmlOutput')"><i class="fa-solid fa-copy"></i> Copy</button>
+          </div>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="htmlProgress"></div></div>
+        <textarea id="htmlOutput" placeholder="<!-- Hasil minify akan muncul di sini -->" readonly></textarea>
+        <div class="stats-bar">
+          <div class="stat"><span class="stat-label">Size:</span><span class="stat-value" id="htmlOutputSize">0 B</span></div>
+          <div class="stat"><span class="stat-label">Saved:</span><span class="stat-value good" id="htmlSaved">—</span></div>
+          <div class="stat"><span class="stat-label">Ratio:</span><span class="stat-value" id="htmlRatio">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Minifier Settings</div>
+        <div class="card-actions">
+          <button class="btn btn-ghost" onclick="resetHTMLSettings()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+          <button class="btn btn-outline btn-ghost" onclick="applyHTMLPreset('max')"><i class="fa-solid fa-fire"></i> Max</button>
+          <button class="btn btn-outline btn-ghost" onclick="applyHTMLPreset('light')"><i class="fa-solid fa-feather"></i> Light</button>
+        </div>
+      </div>
+      <div class="settings-grid">
+        <div class="setting-item on" id="htog-collapse" onclick="toggleSetting(this,'htog-collapse')">
+          <div class="toggle"></div>
+          <div class="setting-label">Collapse Whitespace<small>Hapus spasi berlebih</small></div>
+        </div>
+        <div class="setting-item on" id="htog-remove-comments" onclick="toggleSetting(this,'htog-remove-comments')">
+          <div class="toggle"></div>
+          <div class="setting-label">Remove Comments<small>Hapus semua komentar HTML</small></div>
+        </div>
+        <div class="setting-item on" id="htog-remove-redundant" onclick="toggleSetting(this,'htog-remove-redundant')">
+          <div class="toggle"></div>
+          <div class="setting-label">Remove Redundant Attrs<small>Hapus atribut default</small></div>
+        </div>
+        <div class="setting-item on" id="htog-remove-script-type" onclick="toggleSetting(this,'htog-remove-script-type')">
+          <div class="toggle"></div>
+          <div class="setting-label">Remove Script Type<small>Hapus type="text/javascript"</small></div>
+        </div>
+        <div class="setting-item on" id="htog-remove-tag-whitespace" onclick="toggleSetting(this,'htog-remove-tag-whitespace')">
+          <div class="toggle"></div>
+          <div class="setting-label">Remove Tag Whitespace<small>Hapus spasi antar tag</small></div>
+        </div>
+        <div class="setting-item on" id="htog-short-doctype" onclick="toggleSetting(this,'htog-short-doctype')">
+          <div class="toggle"></div>
+          <div class="setting-label">Short Doctype<small>Gunakan &lt;!DOCTYPE html&gt;</small></div>
+        </div>
+        <div class="setting-item on" id="htog-minify-js" onclick="toggleSetting(this,'htog-minify-js')">
+          <div class="toggle"></div>
+          <div class="setting-label">Minify Inline JS<small>Minify &lt;script&gt; inline</small></div>
+        </div>
+        <div class="setting-item on" id="htog-minify-css" onclick="toggleSetting(this,'htog-minify-css')">
+          <div class="toggle"></div>
+          <div class="setting-label">Minify Inline CSS<small>Minify &lt;style&gt; inline</small></div>
+        </div>
+        <div class="setting-item" id="htog-remove-empty-attrs" onclick="toggleSetting(this,'htog-remove-empty-attrs')">
+          <div class="toggle"></div>
+          <div class="setting-label">Remove Empty Attrs<small>Hapus atribut kosong</small></div>
+        </div>
+        <div class="setting-item on" id="htog-decode-entities" onclick="toggleSetting(this,'htog-decode-entities')">
+          <div class="toggle"></div>
+          <div class="setting-label">Decode Entities<small>Decode HTML entities</small></div>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <div class="action-bar-left">
+          <button class="btn btn-primary" onclick="minifyHTML()"><i class="fa-solid fa-compress"></i> Minify Now</button>
+        </div>
+        <div class="action-bar-right">
+          <button class="btn btn-outline" onclick="downloadOutput('htmlOutput', htmlOriginalName)" id="htmlDownloadBtn" disabled><i class="fa-solid fa-download"></i> Download .html</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="processing-overlay" id="processingOverlay">
+  <div class="spinner"></div>
+  <div class="processing-text" id="processingText">Processing...</div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<footer style="text-align:center;padding:20px;border-top:1px solid var(--md-outline-var);margin-top:8px;">
+  <a href="https://t.me/lanzzx1" target="_blank" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--md-on-surface-var);font-size:13px;font-weight:500;padding:8px 18px;border-radius:var(--radius-full);border:1.5px solid var(--md-outline-var);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--md-primary)';this.style.color='var(--md-primary)';this.style.background='var(--md-primary-container)'" onmouseout="this.style.borderColor='var(--md-outline-var)';this.style.color='var(--md-on-surface-var)';this.style.background='transparent'">
+    <i class="fa-brands fa-telegram" style="font-size:16px;color:#229ED9"></i> @lanzzx1
+  </a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/javascript-obfuscator@4.1.1/dist/index.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html-minifier-terser@7.2.0/dist/htmlminifier.bundle.min.js"></script>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+const jsSettings = {};
+const htmlSettings = {};
+let jsOriginalName = 'obfuscated.js';
+let htmlOriginalName = 'index.html';
+
+function toggleSetting(el, key) {
+  el.classList.toggle('on');
+  const isOn = el.classList.contains('on');
+  if (key.startsWith('htog-')) {
+    htmlSettings[key] = isOn;
+  } else {
+    jsSettings[key] = isOn;
+  }
+}
+
+function initSettings() {
+  document.querySelectorAll('.setting-item').forEach(el => {
+    const isOn = el.classList.contains('on');
+    if (el.id.startsWith('htog-')) {
+      htmlSettings[el.id] = isOn;
+    } else {
+      jsSettings[el.id.replace('tog-', '')] = isOn;
+    }
+  });
+}
+
+function handleDragOver(e, zoneId) {
+  e.preventDefault();
+  document.getElementById(zoneId).classList.add('drag-over');
+}
+function handleDragLeave(e, zoneId) {
+  document.getElementById(zoneId).classList.remove('drag-over');
+}
+function handleDrop(e, type) {
+  e.preventDefault();
+  const zoneId = type === 'js' ? 'jsUploadZone' : 'htmlUploadZone';
+  document.getElementById(zoneId).classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) readFile(file, type);
+}
+
+function loadJSFile(e) { if (e.target.files[0]) readFile(e.target.files[0], 'js'); }
+function loadHTMLFile(e) { if (e.target.files[0]) readFile(e.target.files[0], 'html'); }
+
+function readFile(file, type) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    if (type === 'js') {
+      document.getElementById('jsInput').value = e.target.result;
+      document.getElementById('jsFileName').textContent = file.name;
+      jsOriginalName = file.name;
+      document.getElementById('jsFileInfo').classList.add('show');
+      updateJSInputStats();
+    } else {
+      document.getElementById('htmlInput').value = e.target.result;
+      document.getElementById('htmlFileName').textContent = file.name;
+      htmlOriginalName = file.name;
+      document.getElementById('htmlFileInfo').classList.add('show');
+      updateHTMLInputStats();
+    }
+    showToast('File "' + file.name + '" berhasil dimuat!', 'success');
+  };
+  reader.readAsText(file);
+}
+
+function formatBytes(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+  return (b / 1048576).toFixed(2) + ' MB';
+}
+
+document.getElementById('jsInput').addEventListener('input', updateJSInputStats);
+document.getElementById('htmlInput').addEventListener('input', updateHTMLInputStats);
+
+function updateJSInputStats() {
+  const val = document.getElementById('jsInput').value;
+  document.getElementById('jsInputSize').textContent = formatBytes(new Blob([val]).size);
+  document.getElementById('jsInputLines').textContent = val ? val.split('\n').length : 0;
+  document.getElementById('jsInputChars').textContent = val.length;
+}
+function updateHTMLInputStats() {
+  const val = document.getElementById('htmlInput').value;
+  document.getElementById('htmlInputSize').textContent = formatBytes(new Blob([val]).size);
+  document.getElementById('htmlInputLines').textContent = val ? val.split('\n').length : 0;
+  const tags = (val.match(/<[a-z][^>]*>/gi) || []).length;
+  document.getElementById('htmlInputTags').textContent = tags;
+}
+
+async function obfuscateJS() {
+  const input = document.getElementById('jsInput').value.trim();
+  if (!input) { showToast('Input JavaScript kosong!', 'error'); return; }
+  showProcessing('Mengobfuscate JavaScript...');
+  animateProgress('jsProgress');
+  await sleep(300);
+  try {
+    if (typeof JavaScriptObfuscator === 'undefined') {
+      throw new Error('Library javascript-obfuscator belum dimuat. Coba refresh halaman.');
+    }
+    const options = buildJSOptions();
+    const result = JavaScriptObfuscator.obfuscate(input, options);
+    const obfuscated = result.getObfuscatedCode();
+    document.getElementById('jsOutput').value = obfuscated;
+    const inSize = new Blob([input]).size;
+    const outSize = new Blob([obfuscated]).size;
+    document.getElementById('jsOutputSize').textContent = formatBytes(outSize);
+    document.getElementById('jsRatio').textContent = (outSize / inSize * 100).toFixed(0) + '%';
+    document.getElementById('jsStatus').textContent = '✅ done';
+    document.getElementById('jsDownloadBtn').disabled = false;
+    finishProgress('jsProgress');
+    hideProcessing();
+    showToast('Obfuscation berhasil! 🛡️', 'success');
+  } catch (err) {
+    hideProcessing();
+    resetProgress('jsProgress');
+    document.getElementById('jsStatus').textContent = '❌ error';
+    showToast('Error: ' + err.message, 'error');
+    console.error(err);
+  }
+}
+
+function buildJSOptions() {
+  const get = (id) => document.getElementById(id) ? document.getElementById(id).classList.contains('on') : false;
+  const identifierMode = document.getElementById('sel-identifier').value;
+
+  // Chinese unicode chars pool
+  const chineseChars = '的一是在不了有和人这中大为上个国我以要他时来用们生到作地于出就分对成会可主发年动同工也能下过子说产种面而方后多定行学法所民得经十三之进着等部度家电力里如水化高自二理起小物现实加量都两体制机当使点从业本去把性好应开它合还因由其些然前外天政四日那社义事平形相全表间样与关各重新线内数正心力理女本重日打字.</p>';
+  const chineseArr = [...new Set(chineseChars.replace(/[.\s]/g, ''))];
+
+  let identifierNamesGenerator = identifierMode;
+  let extraOpts = {};
+
+  if (identifierMode === 'chinese') {
+    identifierNamesGenerator = 'dictionary';
+    extraOpts.identifiersDictionary = chineseArr;
+  } else if (identifierMode === 'watermark') {
+    const wm = (document.getElementById('inp-watermark').value.trim() || 'wm').replace(/[^a-zA-Z0-9_]/g, '_');
+    identifierNamesGenerator = 'dictionary';
+    const wmDict = [];
+    for (let i = 0; i < 500; i++) {
+      wmDict.push(`_${wm}_0x${Math.floor(Math.random()*0xFFFF).toString(16).padStart(4,'0')}`);
+    }
+    extraOpts.identifiersDictionary = wmDict;
+  }
+
+  return {
+    compact: get('tog-compact'),
+    selfDefending: get('tog-self-defending'),
+    controlFlowFlattening: get('tog-control-flow'),
+    controlFlowFlatteningThreshold: get('tog-control-flow') ? 1 : 0,
+    deadCodeInjection: get('tog-dead-code'),
+    deadCodeInjectionThreshold: get('tog-dead-code') ? 1 : 0,
+    debugProtection: get('tog-debug-protection'),
+    debugProtectionInterval: get('tog-debug-protection') ? parseInt(document.getElementById('inp-debug-interval').value) || 4000 : 0,
+    disableConsoleOutput: get('tog-disable-console'),
+    identifierNamesGenerator,
+    ...extraOpts,
+    numbersToExpressions: get('tog-numbers-expr'),
+    renameGlobals: get('tog-rename-globals'),
+    simplify: get('tog-simplify'),
+    splitStrings: get('tog-split-strings'),
+    splitStringsChunkLength: parseInt(document.getElementById('inp-chunk-len').value) || 2,
+    stringArray: get('tog-string-array'),
+    stringArrayCallsTransform: get('tog-string-calls'),
+    stringArrayCallsTransformThreshold: get('tog-string-calls') ? 1 : 0,
+    stringArrayEncoding: get('tog-string-array') ? [document.getElementById('sel-encoding').value] : [],
+    stringArrayIndexShift: get('tog-str-index-shift'),
+    stringArrayRotate: get('tog-str-rotate'),
+    stringArrayShuffle: get('tog-str-shuffle'),
+    stringArrayWrappersCount: parseInt(document.getElementById('inp-wrappers-count').value) || 5,
+    stringArrayWrappersChainedCalls: get('tog-chained-calls'),
+    stringArrayWrappersParametersMaxCount: parseInt(document.getElementById('inp-wrappers-params').value) || 5,
+    stringArrayWrappersType: 'function',
+    transformObjectKeys: get('tog-transform-obj'),
+    unicodeEscapeSequence: get('tog-unicode-escape'),
+  };
+}
+
+function toggleWatermarkField() {
+  const mode = document.getElementById('sel-identifier').value;
+  document.getElementById('field-watermark').style.display = mode === 'watermark' ? 'flex' : 'none';
+}
+
+async function minifyHTML() {
+  const input = document.getElementById('htmlInput').value.trim();
+  if (!input) { showToast('Input HTML kosong!', 'error'); return; }
+  showProcessing('Meminify HTML...');
+  animateProgress('htmlProgress');
+  await sleep(200);
+  try {
+    if (typeof minify === 'undefined' && typeof HTMLMinifier === 'undefined') {
+      const minified = manualMinifyHTML(input, {
+        collapse: document.getElementById('htog-collapse').classList.contains('on'),
+        removeComments: document.getElementById('htog-remove-comments').classList.contains('on'),
+        shortDoctype: document.getElementById('htog-short-doctype').classList.contains('on'),
+        removeRedundant: document.getElementById('htog-remove-redundant').classList.contains('on'),
+        removeScriptType: document.getElementById('htog-remove-script-type').classList.contains('on'),
+        removeTagWhitespace: document.getElementById('htog-remove-tag-whitespace').classList.contains('on'),
+        decodeEntities: document.getElementById('htog-decode-entities').classList.contains('on'),
+      });
+      setHTMLOutput(input, minified);
+    } else {
+      const minifyFn = typeof minify !== 'undefined' ? minify : HTMLMinifier.minify;
+      const opts = {
+        collapseWhitespace: document.getElementById('htog-collapse').classList.contains('on'),
+        removeComments: document.getElementById('htog-remove-comments').classList.contains('on'),
+        removeRedundantAttributes: document.getElementById('htog-remove-redundant').classList.contains('on'),
+        removeScriptTypeAttributes: document.getElementById('htog-remove-script-type').classList.contains('on'),
+        removeTagWhitespace: document.getElementById('htog-remove-tag-whitespace').classList.contains('on'),
+        useShortDoctype: document.getElementById('htog-short-doctype').classList.contains('on'),
+        minifyJS: document.getElementById('htog-minify-js').classList.contains('on'),
+        minifyCSS: document.getElementById('htog-minify-css').classList.contains('on'),
+        removeEmptyAttributes: document.getElementById('htog-remove-empty-attrs').classList.contains('on'),
+        decodeEntities: document.getElementById('htog-decode-entities').classList.contains('on'),
+      };
+      const minified = await minifyFn(input, opts);
+      setHTMLOutput(input, minified);
+    }
+    finishProgress('htmlProgress');
+    hideProcessing();
+    showToast('Minify berhasil! 🗜️', 'success');
+  } catch (err) {
+    try {
+      const minified = manualMinifyHTML(input, { collapse: true, removeComments: true });
+      setHTMLOutput(input, minified);
+      finishProgress('htmlProgress');
+      hideProcessing();
+      showToast('Minify berhasil (mode manual)! 🗜️', 'info');
+    } catch (e2) {
+      hideProcessing();
+      resetProgress('htmlProgress');
+      showToast('Error: ' + err.message, 'error');
+    }
+  }
+}
+
+function manualMinifyHTML(html, opts) {
+  let result = html;
+  if (opts.removeComments) result = result.replace(/<!--[\s\S]*?-->/g, '');
+  if (opts.shortDoctype) result = result.replace(/<!DOCTYPE[^>]*>/i, '<!DOCTYPE html>');
+  if (opts.removeScriptType) result = result.replace(/(<script)\s+type=["']text\/javascript["']/gi, '$1');
+  if (opts.removeRedundant) {
+    result = result.replace(/\s+type=["']text\/css["']/gi, '');
+    result = result.replace(/\s+method=["']get["']/gi, '');
+  }
+  if (opts.collapse) {
+    result = result.replace(/\s{2,}/g, ' ');
+    result = result.replace(/>\s+</g, '><');
+    result = result.replace(/\n+/g, '');
+  }
+  return result.trim();
+}
+
+function setHTMLOutput(input, minified) {
+  document.getElementById('htmlOutput').value = minified;
+  const inSize = new Blob([input]).size;
+  const outSize = new Blob([minified]).size;
+  const saved = inSize - outSize;
+  document.getElementById('htmlOutputSize').textContent = formatBytes(outSize);
+  document.getElementById('htmlSaved').textContent = '-' + formatBytes(saved);
+  document.getElementById('htmlRatio').textContent = (outSize / inSize * 100).toFixed(0) + '%';
+  document.getElementById('htmlDownloadBtn').disabled = false;
+}
+
+function downloadOutput(textareaId, filename) {
+  const content = document.getElementById(textareaId).value;
+  if (!content) { showToast('Tidak ada output untuk didownload', 'error'); return; }
+  const blob = new Blob([content], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Download dimulai: ' + filename, 'success');
+}
+
+async function copyOutput(id) {
+  const val = document.getElementById(id).value;
+  if (!val) { showToast('Tidak ada output untuk dicopy', 'error'); return; }
+  try {
+    await navigator.clipboard.writeText(val);
+    showToast('Berhasil dicopy ke clipboard! 📋', 'success');
+  } catch (e) {
+    const el = document.getElementById(id);
+    el.select();
+    document.execCommand('copy');
+    showToast('Berhasil dicopy!', 'success');
+  }
+}
+
+async function pasteJS() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById('jsInput').value = text;
+    updateJSInputStats();
+    showToast('Berhasil paste dari clipboard!', 'info');
+  } catch (e) { showToast('Gagal akses clipboard', 'error'); }
+}
+
+function clearJSOutput() {
+  document.getElementById('jsOutput').value = '';
+  document.getElementById('jsOutputSize').textContent = '0 B';
+  document.getElementById('jsRatio').textContent = '—';
+  document.getElementById('jsStatus').textContent = 'idle';
+  document.getElementById('jsDownloadBtn').disabled = true;
+  resetProgress('jsProgress');
+  showToast('Output dihapus', 'info');
+}
+function clearHTMLOutput() {
+  document.getElementById('htmlOutput').value = '';
+  document.getElementById('htmlOutputSize').textContent = '0 B';
+  document.getElementById('htmlSaved').textContent = '—';
+  document.getElementById('htmlRatio').textContent = '—';
+  document.getElementById('htmlDownloadBtn').disabled = true;
+  resetProgress('htmlProgress');
+  showToast('Output dihapus', 'info');
+}
+
+function applyPreset(type) {
+  const allToggles = document.querySelectorAll('#panel-js .setting-item');
+  const encodingSel = document.getElementById('sel-encoding');
+
+  if (type === 'max') {
+    // Semua proteksi nyala + encoding paling kuat (RC4)
+    allToggles.forEach(el => el.classList.add('on'));
+    encodingSel.value = 'rc4';
+  } else if (type === 'light') {
+    // Hanya yang murah secara performa tapi tetap bikin source tidak gampang
+    // dibaca/di-rename ulang: string array + encoding base64, split strings,
+    // simplify, rename globals, dan transform object keys.
+    const lightOn = [
+      'tog-compact',         // hapus whitespace, zero overhead
+      'tog-simplify',        // sederhanakan ekspresi, zero overhead
+      'tog-string-array',    // kumpulkan string -> tidak bisa dibaca langsung
+      'tog-split-strings',   // pecah string jadi chunk
+      'tog-rename-globals',  // rename identifier global (private source)
+      'tog-transform-obj',   // obfuscate key objek (private source)
+    ];
+    allToggles.forEach(el => {
+      if (lightOn.includes(el.id)) el.classList.add('on');
+      else el.classList.remove('on');
+    });
+    encodingSel.value = 'base64';
+  }
+  showToast('Preset ' + (type === 'max' ? 'Maximum' : 'Light') + ' diterapkan!', 'info');
+}
+
+function resetJSSettings() {
+  document.querySelectorAll('#panel-js .setting-item').forEach(el => el.classList.add('on'));
+  document.getElementById('sel-encoding').value = 'rc4';
+  document.getElementById('sel-identifier').value = 'hexadecimal';
+  toggleWatermarkField();
+  showToast('Settings direset ke default', 'info');
+}
+function resetHTMLSettings() {
+  document.querySelectorAll('#panel-html .setting-item').forEach(el => el.classList.add('on'));
+  document.getElementById('htog-remove-empty-attrs').classList.remove('on');
+  showToast('Settings HTML direset ke default', 'info');
+}
+
+function applyHTMLPreset(type) {
+  const allToggles = document.querySelectorAll('#panel-html .setting-item');
+  allToggles.forEach(el => {
+    if (type === 'max') {
+      el.classList.add('on');
+    } else if (type === 'light') {
+      const heavy = ['htog-minify-js', 'htog-minify-css', 'htog-decode-entities', 'htog-remove-empty-attrs'];
+      if (heavy.includes(el.id)) el.classList.remove('on');
+      else el.classList.add('on');
+    }
+  });
+  showToast('HTML Preset ' + (type === 'max' ? 'Maximum' : 'Light') + ' diterapkan!', 'info');
+}
+
+function animateProgress(id) {
+  const bar = document.getElementById(id);
+  bar.style.width = '0%';
+  let w = 0;
+  const iv = setInterval(() => {
+    w += Math.random() * 15;
+    if (w >= 85) { clearInterval(iv); w = 85; }
+    bar.style.width = w + '%';
+  }, 150);
+  bar._interval = iv;
+}
+function finishProgress(id) {
+  const bar = document.getElementById(id);
+  if (bar._interval) clearInterval(bar._interval);
+  bar.style.width = '100%';
+  setTimeout(() => bar.style.width = '0%', 1200);
+}
+function resetProgress(id) {
+  const bar = document.getElementById(id);
+  if (bar._interval) clearInterval(bar._interval);
+  bar.style.width = '0%';
+}
+
+function showProcessing(msg) {
+  document.getElementById('processingText').textContent = msg || 'Processing...';
+  document.getElementById('processingOverlay').classList.add('show');
+}
+function hideProcessing() {
+  document.getElementById('processingOverlay').classList.remove('show');
+}
+
+function showToast(msg, type = 'info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = (type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️') + ' ' + msg;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transition = 'opacity 0.4s';
+    setTimeout(() => t.remove(), 400);
+  }, 3000);
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+initSettings();
+updateJSInputStats();
+updateHTMLInputStats();
+</script>
+
+</body>
+</html>
